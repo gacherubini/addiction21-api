@@ -5,9 +5,6 @@ const cors = require('cors');
 const app = express()
 require('dotenv').config();
 
-
-
-
 // Enable CORS for all routes
 app.use(cors());
 
@@ -32,9 +29,6 @@ const musicaRotas = require('./routes/musicasRotas')
 
 app.use('/Musica', musicaRotas)
 
-const showAntigoRotas = require('./routes/showAntigoRotas')
-
-app.use('/showAntigo', showAntigoRotas)
 
 const showRotas = require('./routes/showRotas')
 

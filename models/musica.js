@@ -4,7 +4,8 @@ const Musica = mongoose.model('musica', {
     nome: String,
     artistas: String,
     data: String,
-    imagem: String
+    imagem: String,
+    link: String
 });
 
 module.exports = Musica

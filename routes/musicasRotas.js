@@ -8,7 +8,7 @@
     router.post('/', async (req, res)=>{
 
         //req.body
-        const {nome,artistas,data, imagem} = req.body
+        const {nome,artistas,data, imagem, link} = req.body
 
         if (!nome) {
             res.status(422).json({error: 'o nome é obrigatorio'})
@@ -19,7 +19,8 @@
             nome,
             artistas,
             data,
-            imagem
+            imagem,
+            link
         }
 
         try {
@@ -43,7 +44,6 @@
 
         } catch (error) {
             res.status(500).json({error: error})
-
         }
     })
 
@@ -73,13 +73,14 @@
 
         const id = req.params.id
 
-        const {nome,artista,data, imagem} = req.body
+        const {nome,artista,data, imagem, link} = req.body
 
         const music ={
             nome,
             artista,
             data,
-            imagem
+            imagem,
+            link
         }
 
         try{
@@ -117,7 +118,6 @@
             res.status(200).json({message: 'musica removido com sucesso'})
         } catch (error) {
             res.status(500).json({error: error})
-
         }
 
     })
