@@ -7,7 +7,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
  try {
     const playlistId = '1012283755'; // Replace with the actual playlist ID
-    const accessToken = '2-294407--AJuKBvOZF8DXCfTIybymX9r'; // Replace with the actual access token
+    const accessToken = '2-294407--P4oEavOlDZc5UV9rROo7nKi'; // Replace with the actual access token
 
     const soundCloudEndpoint = `https://api.soundcloud.com/users/${playlistId}/tracks`;
 
@@ -19,11 +19,16 @@ router.get('/', async (req, res) => {
       }
     });
 
-    const soundCloudData = response.data;
+    const soundCloudData = await response.data;
 
-    res.status(200).json(soundCloudData)
+    
+    // Filter tracks by the start of their names
+    const desiredStart = 'ADDICAST'; // Replace with the desired start of the name
+    const filteredTracks = soundCloudData.filter(track => track.title.startsWith(desiredStart));
 
-    res.status(200).json({ message: 'SoundCloud data fetched and added to Addicast' });
+
+    res.status(200).json(filteredTracks)
+
  } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to retrieve SoundCloud data' });
