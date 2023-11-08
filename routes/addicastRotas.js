@@ -7,7 +7,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
  try {
     const playlistId = '1012283755'; // Replace with the actual playlist ID
-    const accessToken = '2-294407--P4oEavOlDZc5UV9rROo7nKi'; // Replace with the actual access token
+    const accessToken = '2-294407--ScCanzhO3VRqh4yEikbEjmj'; // Replace with the actual access token
 
     const soundCloudEndpoint = `https://api.soundcloud.com/users/${playlistId}/tracks`;
 
