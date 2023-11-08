@@ -3,6 +3,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors');
 const app = express()
+
 require('dotenv').config();
 
 // Enable CORS for all routes
@@ -33,6 +34,12 @@ app.use('/Musica', musicaRotas)
 const showRotas = require('./routes/showRotas')
 
 app.use('/show', showRotas)
+
+
+const addicastRotas = require('./routes/addicastRotas');
+
+app.use('/addicast', addicastRotas);
+
 
 
 
