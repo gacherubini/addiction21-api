@@ -40,9 +40,7 @@ const addicastRotas = require('./routes/addicastRotas');
 
 app.use('/addicast', addicastRotas);
 
-// const previewRotas = require('./routes/previewRotas');
-
-// app.use('/preview', previewRotas);
+app.use('/track', addicastRotas);
 
 
 
