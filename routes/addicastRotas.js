@@ -10,8 +10,7 @@ const router = express.Router();
 const soundCloudApi = "https://api.soundcloud.com"
 let accessToken = ''; // Store the access token
 let refreshToken = ''; // Store the refresh token
-// let accessToken = "2-294407--bUL5yenmRJc2SsvDuHgCLSb";
-// let refreshToken = "9vuIAG0tac3lBvyvEijMtzXpH7zUflLw";
+
 
 async function checkSoundCloudAccessToken(error) {
   //if (error.response != null && error.response.status === 401) {
@@ -21,6 +20,18 @@ async function checkSoundCloudAccessToken(error) {
     const isRefreshSuccessful =  await refreshSoundCloudAccessToken();
   } 
 }
+
+function convertCreatedAtToYYYYMMDD(apiResponse) {
+  const isoDate = apiResponse.created_at;
+  const date = new Date(isoDate);
+  
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
 
 
 async function getSoundCloudAccessToken() {
@@ -158,11 +169,10 @@ router.get('/:id', async (req, res) => {
  
      const soundCloudData = response.data;
 
-    //  const filteredTracksNew = soundCloudData.map(track => ({
-    //   ...track,
-    //   artwork_url: track.artwork_url.replace('large.jpg', 't500x500.jpg')
-    // }));
- 
+    soundCloudData.created_at = convertCreatedAtToYYYYMMDD(soundCloudData);
+
+    soundCloudData.artwork_url = soundCloudData.artwork_url.replace('large.jpg', 't500x500.jpg');
+
      res.status(200).json(soundCloudData)
  
   } catch (error) {
