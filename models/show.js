@@ -1,9 +1,16 @@
-const mongoose = require('mongoose')
+const Sequelize = require('sequelize');
+const database = require('../db');
 
-const Show = mongoose.model('show', {
-    nome: String,
-    artistas: String,
-    data: String
-});
+const Show = database.define('show', {
+    nome: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
+    artistas: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
+    data: Sequelize.STRING
+})
 
-module.exports = Show
+module.exports = Show;

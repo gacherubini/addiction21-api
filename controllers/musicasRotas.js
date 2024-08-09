@@ -1,5 +1,5 @@
-    const router = require('express').Router()
-
+    const express = require('express');
+    const router = express.Router();
     const Musica = require('../models/musica')
 
 
@@ -34,23 +34,29 @@
     })
 
 
-    // readt - leitura de dados
-    router.get('/', async(req,res)=>{
+    router.get('/', async (req, res) => {
+        console.log('Recebida solicitação GET / para listar todas as músicas');
         try {
+            const music = await Musica.findAll();
+            console.log('Músicas encontradas:', music);
 
-        const music = await Musica.find()
+            if (!music || music.length === 0) {
+                console.log('Nenhuma música encontrada');
+                res.status(200).json([]);
+                return;
+            }
 
-        res.status(200).json(music)
-
+            res.status(200).json(music);
         } catch (error) {
-            res.status(500).json({error: error})
+            console.error('Erro ao buscar registros:', error);
+            res.status(500).json({ error: error.message });
         }
-    })
+    });
+
 
 
     router.get('/:id', async(req,res)=>{
         
-        //extrait dado da requisicao,pela url = req.params
         const id =req.params.id
 
         try {
@@ -68,7 +74,6 @@
 
     })
 
-    //update - atualizacao de dados(PUT, PATCH)
     router.patch('/:id', async(req,res) =>{
 
         const id = req.params.id
@@ -85,7 +90,7 @@
 
         try{
 
-            const updateMusic = await Musica.updateOne({_id: id}, music)
+            const updateMusic = await Musica.update({_id: id}, music)
 
             if(updateMusic.matchedCount===0){
                 res.status(422).json({message: 'musica nao encontrada'})
@@ -113,7 +118,7 @@
         }
 
         try {
-            await Musica.deleteOne({_id: id})
+            await Musica.destroy({_id: id})
 
             res.status(200).json({message: 'musica removido com sucesso'})
         } catch (error) {

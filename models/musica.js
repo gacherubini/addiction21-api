@@ -1,11 +1,22 @@
-const mongoose = require('mongoose')
+const Sequelize = require('sequelize');
+const database = require('../db');
 
-const Musica = mongoose.model('musica', {
-    nome: String,
-    artistas: String,
-    data: String,
-    imagem: String,
-    link: String
+const Musica = database.define('musica', {
+    nome: {
+        type: Sequelize.STRING,
+    },
+    artistas: {
+        type: Sequelize.STRING,
+    },
+    data: {
+        type: Sequelize.STRING,
+    },
+    imagem: {
+        type: Sequelize.STRING
+    },
+    link: {
+        type: Sequelize.STRING
+    }
 });
 
-module.exports = Musica
+module.exports = Musica;
