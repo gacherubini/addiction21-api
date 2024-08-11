@@ -6,6 +6,7 @@
 
     // create dados
     router.post('/', async (req, res)=>{
+        console.log('Recebida solicitação POST');
 
         //req.body
         const {nome,artistas,data, imagem, link} = req.body
@@ -56,11 +57,12 @@
 
 
     router.get('/:id', async(req,res)=>{
-        
+        console.log('Recebida solicitação GET / para listar 1 musica');
+
         const id =req.params.id
 
         try {
-            const music = await Musica.findOne({_id: id})
+            const music = await Musica.findByPk(id);
 
             if (!music) {
                 res.status(422).json({message: 'A musica não foi encontrada'})
@@ -90,7 +92,7 @@
 
         try{
 
-            const updateMusic = await Musica.update({_id: id}, music)
+            const updateMusic = await Musica.update(music, {where: {id: id}})
 
             if(updateMusic.matchedCount===0){
                 res.status(422).json({message: 'musica nao encontrada'})
@@ -105,27 +107,23 @@
     })
 
     // delete
-
-    router.delete('/:id', async(req,res)=>{
-
-        const id = req.params.id
-
-        const music = await Musica.findOne({_id: id})
-
-        if (!music) {
-            res.status(422).json({message: 'O musica não foi encontrado'})
-            return
-        }
+    router.delete('/:id', async (req, res) => {
+        const id = req.params.id;
 
         try {
-            await Musica.destroy({_id: id})
+            const music = await Musica.findByPk(id)
 
-            res.status(200).json({message: 'musica removido com sucesso'})
+            if (!music) {
+                return res.status(422).json({ message: 'A música não foi encontrada' });
+            }
+
+            music.destroy();
+
+            res.status(200).json({ message: 'Música removida com sucesso' });
         } catch (error) {
-            res.status(500).json({error: error})
+            res.status(500).json({ error: error.message });
         }
-
-    })
+    });
 
 
     module.exports = router;

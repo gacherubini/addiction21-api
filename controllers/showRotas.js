@@ -36,15 +36,14 @@ router.post('/', async (req, res)=>{
 router.get('/', async(req,res)=>{
     try {
 
+    const shows = await Show.findAll()
         
-        const shows = await Show.find()
-        
-            res.status(200).json(shows)
-
-        // setTimeout(function() {
-        //     res.status(500).json({error: error})
-        // }, 3000);
-
+    if (!shows || shows.length === 0) {
+        console.log('Nenhuma shows encontrada');
+        res.status(200).json([]);
+        return;
+    }
+    res.status(200).json(shows)
     } catch (error) {
         res.status(500).json({error: error})
 
@@ -58,7 +57,7 @@ router.get('/:id', async(req,res)=>{
     const id =req.params.id
 
     try {
-        const show = await Show.findOne({_id: id})
+        const show = await Show.findByPk(id);
 
         if (!show) {
             res.status(422).json({message: 'O show não foi encontrada'})
@@ -86,13 +85,12 @@ router.patch('/:id', async(req,res) =>{
     }
 
     try{
+    const updateShow = await Show.update(show, {where: {id: id}})
 
-        const updateShow = await Show.updateOne({_id: id}, music)
-
-        if(updateShow.matchedCount===0){
-            res.status(422).json({message: 'show nao encontrado'})
-            return
-        }
+    if(updateShow.matchedCount===0){
+        res.status(422).json({message: 'show nao encontrado'})
+        return
+    }
         res.status(200).json(show)
     }   catch(error){
         res.status(500).json({error: error})
@@ -107,7 +105,7 @@ router.delete('/:id', async(req,res)=>{
 
     const id = req.params.id
 
-    const show = await Show.findOne({_id: id})
+    const show = await Show.findByPk(id)
 
     if (!show) {
         res.status(422).json({message: 'O show não foi encontrado'})
@@ -115,7 +113,7 @@ router.delete('/:id', async(req,res)=>{
     }
 
     try {
-        await Show.deleteOne({_id: id})
+        show.destroy();
 
         res.status(200).json({message: 'show removido com sucesso'})
     } catch (error) {
