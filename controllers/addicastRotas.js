@@ -5,100 +5,76 @@ const Addicast = require('../models/addicast');
 const router = express.Router();
 
 
-const soundCloudApi = "https://api.soundcloud.com"
-const client_id="EKAIa2h9ncPWkdxcZcnDz60W5V3i3XXN"
-const client_secret="Hv5uraDJGc2pMSOI6H3MF2zPoRjOHcnr"
-
-// Obtain access token from SoundCloud API
+const client_id="37ccb4c596924858864983b108beffca"
+const client_secret="6b6d053e033d4d93ad2904a17239bc95"
 
 async function obtainAccessToken() {
-  // POST https://api.soundcloud.com/oauth2/token
+    try {
+        const data = `grant_type=client_credentials&client_id=${encodeURIComponent(client_id)}&client_secret=${encodeURIComponent(client_secret)}`;
 
-  // PARAMS
-  //grant_type=client_credentials
-  //client_id=EKAIa2h9ncPWkdxcZcnDz60W5V3i3XXN
-  //client_secret=Hv5uraDJGc2pMSOI6H3MF2zPoRjOHcnr
+        const response = await axios.post("https://accounts.spotify.com/api/token", data, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        });
 
-  // HEADERS
-  //accept="application/json; charset=utf-8"
-  //Content-Type="application/x-www-form-urlencoded"
-
-
-  // Request SoundCloud API in order to get the access token
-  const response = await axios.post(soundCloudApi + "/oauth2/token", {
-    headers: {
-      'accept': 'application/json; charset=utf-8',
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    params : {
-      'grant_type': 'client_credentials',
-      'client_id': client_id,
-      'client_secret': client_secret,
+        const oauthTokenResponse = response.data;
+        console.log('Access token obtained:', oauthTokenResponse.access_token);
+        return oauthTokenResponse.access_token;
+    } catch (error) {
+        console.error('Error obtaining access token:', error.response ? error.response.data : error.message);
     }
-  });
-
-  const oauthTokenResponse = await response.data;
-  return oauthTokenResponse.access_token
 }
 
-// List tracks from SoundCloud Addicast playlist
 
 router.get('/', async (req, res) => {
  try {
-    const playlistId = '1012283755'; // addicast playlist on soundcloud
+    const playlistId = '54RA0urFikxwWAUmIHFiy1';
 
-    const accessToken = obtainAccessToken()
-    const soundCloudEndpoint = soundCloudApi + `/users/${playlistId}/tracks`;
+     const accessToken = await obtainAccessToken();
+    const spotfyEndpoint = `https://api.spotify.com/v1/playlists/${playlistId}`;
 
     // Make the Axios request to SoundCloud API
-    const response = await axios.get(soundCloudEndpoint, {
+    const response = await axios.get(spotfyEndpoint, {
       headers: {
-        'accept': 'application/json; charset=utf-8',
-        'Authorization': `OAuth ${accessToken}`
+        'Authorization': `Bearer ${accessToken}`
       }
     });
 
-    const soundCloudData = await response.data;
+    const spotfityData = await response.data;
 
-    
-    // Filter tracks by the start of their names
-    const desiredStart = 'ADDICAST'; // Replace with the desired start of the name
-    const filteredTracks = soundCloudData.filter(track => track.title.startsWith(desiredStart));
-
-
-    res.status(200).json(filteredTracks)
-
+     console.log("Spotify data:", spotfityData);
+    res.status(200).json(spotfityData)
  } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to retrieve SoundCloud data' });
  }
 });
 
-// Detail a track from SoundCloud
 
-router.get('/:id', async (req, res) => {
-  try {
-     const accessToken = obtainAccessToken()
-     const soundCloudEndpoint = soundCloudApi + `/tracks/${req.params.id}`;
- 
-     // Make the Axios request to SoundCloud API
-     const response = await axios.get(soundCloudEndpoint, {
-       headers: {
-         'accept': 'application/json; charset=utf-8',
-         'Authorization': `OAuth ${accessToken}`
-       }
-     });
- 
-     const soundCloudData = await response.data;
- 
-     res.status(200).json(soundCloudData)
- 
-  } catch (error) {
-     console.error(error);
-     res.status(500).json({ error: 'Failed to retrieve SoundCloud data' });
-  }
- });
- 
+// router.get('/:id', async (req, res) => {
+//   try {
+//      const accessToken = obtainAccessToken()
+//      const soundCloudEndpoint = `/tracks/${req.params.id}`;
+//
+//      // Make the Axios request to SoundCloud API
+//      const response = await axios.get(soundCloudEndpoint, {
+//        headers: {
+//          'accept': 'application/json; charset=utf-8',
+//          'Authorization': `OAuth ${accessToken}`
+//        }
+//      });
+//
+//      const soundCloudData = await response.data;
+//
+//      res.status(200).json(soundCloudData)
+//
+//   } catch (error) {
+//      console.error(error);
+//      res.status(500).json({ error: 'Failed to retrieve SoundCloud data' });
+//   }
+//  });
+
 
 
 
