@@ -2,8 +2,6 @@
     const router = express.Router();
     const Musica = require('../models/musica')
 
-
-
     // create dados
     router.post('/', async (req, res)=>{
         console.log('Recebida solicitação POST');
@@ -59,7 +57,7 @@
     router.get('/:id', async(req,res)=>{
         console.log('Recebida solicitação GET / para listar 1 musica');
 
-        const id =req.params.id
+        const id = req.params.id
 
         try {
             const music = await Musica.findByPk(id);
@@ -117,7 +115,7 @@
                 return res.status(422).json({ message: 'A música não foi encontrada' });
             }
 
-            music.destroy();
+            await music.destroy();
 
             res.status(200).json({ message: 'Música removida com sucesso' });
         } catch (error) {
