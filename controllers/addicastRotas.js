@@ -28,27 +28,69 @@ async function obtainAccessToken() {
 
 
 router.get('/', async (req, res) => {
- try {
-    const playlistId = '54RA0urFikxwWAUmIHFiy1';
+    try {
+        const playlistId = '54RA0urFikxwWAUmIHFiy1';
+        const accessToken = await obtainAccessToken();
+        const spotifyEndpoint = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
 
-     const accessToken = await obtainAccessToken();
-    const spotfyEndpoint = `https://api.spotify.com/v1/playlists/${playlistId}`;
+        const response = await axios.get(spotifyEndpoint, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
 
-    // Make the Axios request to SoundCloud API
-    const response = await axios.get(spotfyEndpoint, {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`
-      }
-    });
+        const transformedData = response.data.items.map(item => {
+            const track = item.track;
 
-    const spotfityData = await response.data;
+            return {
+                id: track.id,
+                artwork_url: track.album.images[0]?.url,
+                title: track.name,
+                permalink_url: track.external_urls.spotify,
+            };
+        });
 
-     console.log("Spotify data:", spotfityData);
-    res.status(200).json(spotfityData)
- } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Failed to retrieve SoundCloud data' });
- }
+        res.status(200).json(transformedData);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Failed to retrieve Spotify data' });
+    }
+});
+
+router.get('/:id', async (req, res) => {
+    try {
+        const id = req.params.id
+
+        const accessToken = await obtainAccessToken();
+        const spotifyEndpoint = `https://api.spotify.com/v1/tracks/${id}`;
+
+        const response = await axios.get(spotifyEndpoint, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+
+        const track = response.data;
+
+        const transformedData = {
+            id: track.id,
+            artwork_url: track.album.images[0]?.url,
+            title: track.name,
+            permalink_url: track.external_urls.spotify,
+            genre: track.album.genres ? track.album.genres.join(', ') : 'Unknown',
+            description: track.album.name,
+            user: {
+                username: track.artists.map(artist => artist.name).join(', '),
+                city: 'N/A'
+            },
+            created_at: track.album.release_date
+        };
+
+        res.status(200).json(transformedData);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Failed to retrieve Spotify data' });
+    }
 });
 
 
@@ -74,8 +116,6 @@ router.get('/', async (req, res) => {
 //      res.status(500).json({ error: 'Failed to retrieve SoundCloud data' });
 //   }
 //  });
-
-
 
 
 module.exports = router;

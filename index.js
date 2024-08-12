@@ -16,11 +16,9 @@ app.use(express.json());
 
 // API routes
 const musicaControllers = require('./controllers/musicasRotas');
-const showControllers = require('./controllers/showRotas');
 const addicastControllers = require('./controllers/addicastRotas');
 
 app.use('/musica', musicaControllers);
-app.use('/show', showControllers);
 app.use('/addicast', addicastControllers);
 
 // Initial route / endpoint
