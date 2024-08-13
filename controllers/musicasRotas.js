@@ -2,7 +2,6 @@
     const router = express.Router();
     const Musica = require('../models/musica')
 
-    // create dados
     router.post('/', async (req, res)=>{
         console.log('Recebida solicitação POST');
 
@@ -34,20 +33,16 @@
 
 
     router.get('/', async (req, res) => {
-        console.log('Recebida solicitação GET / para listar todas as músicas');
         try {
             const music = await Musica.findAll();
-            console.log('Músicas encontradas:', music);
 
             if (!music || music.length === 0) {
-                console.log('Nenhuma música encontrada');
                 res.status(200).json([]);
                 return;
             }
 
             res.status(200).json(music);
         } catch (error) {
-            console.error('Erro ao buscar registros:', error);
             res.status(500).json({ error: error.message });
         }
     });

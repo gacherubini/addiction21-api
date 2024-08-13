@@ -17,16 +17,17 @@ app.use(express.json());
 // API routes
 const musicaControllers = require('./controllers/musicasRotas');
 const addicastControllers = require('./controllers/addicastRotas');
+const artistatControllers = require('./controllers/addicastRotas');
+
 
 app.use('/musica', musicaControllers);
 app.use('/addicast', addicastControllers);
+app.use('/artista', artistatControllers);
 
-// Initial route / endpoint
 app.get('/', (req, res) => {
     res.json({ message: 'oi express' });
 });
 
-// Database connection and synchronization
 (async () => {
     try {
         await sequelize.authenticate();
