@@ -1,5 +1,7 @@
 const { Sequelize } = require('sequelize');
 
+require('dotenv').config();
+
 const dbName = process.env.DB_NAME || 'postgres';
 const dbUser = process.env.DB_USER || 'postgres';
 const dbHost =  'db';

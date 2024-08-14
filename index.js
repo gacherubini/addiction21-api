@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { spotifyController, artistaController, musicaController, sequelize } = require('./src/setup');
+const { spotifyController, artistaController, musicaController, sequelize, contatoController } = require('./src/setup');
 
 const app = express();
 app.use(cors());
@@ -20,6 +20,8 @@ app.get('/artista/:id', artistaController.getById.bind(artistaController));
 app.post('/artista', artistaController.create.bind(artistaController));
 app.patch('/artista/:id', artistaController.update.bind(artistaController));
 app.delete('/artista/:id', artistaController.delete.bind(artistaController));
+
+app.post('/contato', contatoController.SendEmail.bind(contatoController));
 
 (async () => {
     try {
