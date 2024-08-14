@@ -1,32 +1,25 @@
 const express = require('express');
 const cors = require('cors');
-const dotenv = require('dotenv');
-const sequelize = require('./db'); // Certifique-se de que a instância do Sequelize está sendo importada corretamente
-
-dotenv.config();
+const { spotifyController, artistaController, musicaController, sequelize } = require('./src/setup');
 
 const app = express();
-
-// Enable CORS for all routes
 app.use(cors());
-
-// Middleware to parse URL-encoded and JSON data
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// API routes
-const musicaControllers = require('./controllers/musicasRotas');
-const addicastControllers = require('./controllers/addicastRotas');
-const artistatControllers = require('./controllers/addicastRotas');
+app.get('/musica', musicaController.getAll.bind(musicaController));
+app.get('/musica/:id', musicaController.getById.bind(musicaController));
+app.post('/musica', musicaController.create.bind(musicaController));
+app.patch('/musica/:id', musicaController.update.bind(musicaController));
+app.delete('/musica/:id', musicaController.delete.bind(musicaController));
 
+app.get('/addicast', spotifyController.getPlaylistTracks.bind(spotifyController));
 
-app.use('/musica', musicaControllers);
-app.use('/addicast', addicastControllers);
-app.use('/artista', artistatControllers);
-
-app.get('/', (req, res) => {
-    res.json({ message: 'oi express' });
-});
+app.get('/artista', artistaController.getAll.bind(artistaController));
+app.get('/artista/:id', artistaController.getById.bind(artistaController));
+app.post('/artista', artistaController.create.bind(artistaController));
+app.patch('/artista/:id', artistaController.update.bind(artistaController));
+app.delete('/artista/:id', artistaController.delete.bind(artistaController));
 
 (async () => {
     try {
@@ -34,17 +27,12 @@ app.get('/', (req, res) => {
         console.log('Connection has been established successfully.');
         await sequelize.sync();
         console.log('Database synchronized.');
+
+        const PORT = process.env.PORT || 3000;
+        app.listen(PORT, () => {
+            console.log(`Servidor rodando na porta ${PORT}`);
+        });
     } catch (error) {
         console.error('Unable to connect to the database:', error);
     }
 })();
-
-try {
-    console.log('Trying to start server');
-    const port = 3000;
-    app.listen(port, () => {
-        console.log(`Server is running on port ${port}`);
-    });
-} catch (error) {
-    console.error('Error starting server:', error);
-}

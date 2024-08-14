@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const database = require('../db');
+const database = require('../../infra/database/db');
 
 const Addicast = database.define('addicast', {
     nome: {

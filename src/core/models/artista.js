@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const database = require('../db');
+const database = require('../../infra/database/db');
 
 const Artista = database.define('artista', {
     nome: {
