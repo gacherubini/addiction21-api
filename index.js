@@ -1,8 +1,9 @@
 const express = require('express');
 const cors = require('cors');
-const { spotifyController, artistaController, musicaController, sequelize, contatoController } = require('./src/setup');
+const { spotifyController, newsController, musicaController, sequelize, contatoController } = require('./src/setup');
 
 const app = express();
+
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -15,11 +16,11 @@ app.delete('/musica/:id', musicaController.delete.bind(musicaController));
 
 app.get('/addicast', spotifyController.getPlaylistTracks.bind(spotifyController));
 
-app.get('/artista', artistaController.getAll.bind(artistaController));
-app.get('/artista/:id', artistaController.getById.bind(artistaController));
-app.post('/artista', artistaController.create.bind(artistaController));
-app.patch('/artista/:id', artistaController.update.bind(artistaController));
-app.delete('/artista/:id', artistaController.delete.bind(artistaController));
+app.get('/news', newsController.getAll.bind(newsController));
+app.get('/news/:id', newsController.getById.bind(newsController));
+app.post('/news', newsController.create.bind(newsController));
+app.patch('/news/:id', newsController.update.bind(newsController));
+app.delete('/news/:id', newsController.delete.bind(newsController));
 
 app.post('/contato', contatoController.SendEmail.bind(contatoController));
 

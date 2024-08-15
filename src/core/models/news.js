@@ -1,31 +1,37 @@
 const Sequelize = require('sequelize');
 const database = require('../../infra/database/db');
 
-const Artista = database.define('artista', {
-    nome: {
+const News = database.define('news', {
+    title: {
         type: Sequelize.STRING,
         allowNull: false,
+        unique: true,
     },
-    descricao: {
+    content: {
         type: Sequelize.TEXT,
         allowNull: false,
     },
-    imagem: {
+    author: {
         type: Sequelize.STRING,
         allowNull: false,
     },
-    insta: {
+    publicationDate: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.NOW,
+    },
+    imageUrl: {
         type: Sequelize.STRING,
         allowNull: true,
     },
-    soundcloud: {
-        type: Sequelize.STRING,
+    tags: {
+        type: Sequelize.ARRAY(Sequelize.STRING),
         allowNull: true,
     },
-    youtube: {
+    externalLink: {
         type: Sequelize.STRING,
         allowNull: true,
     },
 });
 
-module.exports = Artista;
+module.exports = News;
