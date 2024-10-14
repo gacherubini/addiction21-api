@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { spotifyController, newsController, musicaController, sequelize, contatoController } = require('./src/setup');
+const { spotifyController, newsController, musicaController, sequelize, contatoController } = require('./src/api/setup');
 
 const app = express();
 
@@ -24,6 +24,11 @@ app.delete('/news/:id', newsController.delete.bind(newsController));
 
 app.post('/contato', contatoController.SendEmail.bind(contatoController));
 
+app.get("/greet", (req, res) => {
+    const name = req.query.name || "World";
+    res.json({ message: `Hello, ${name}!` });
+    });
+
 (async () => {
     try {
         await sequelize.authenticate();
@@ -39,3 +44,5 @@ app.post('/contato', contatoController.SendEmail.bind(contatoController));
         console.error('Unable to connect to the database:', error);
     }
 })();
+
+module.exports = app;

@@ -1,6 +1,7 @@
 class NewsController {
-    constructor(newsService) {
-        this.newsService = newsService;
+
+    constructor(NewsService) {
+        this.newsService = NewsService;
     }
 
     async getAll(req, res) {
@@ -14,6 +15,7 @@ class NewsController {
 
     async getById(req, res) {
         const id = req.params.id;
+
         try {
             const newsItem = await this.newsService.getNewsById(id);
             if (!newsItem) {
@@ -27,9 +29,11 @@ class NewsController {
 
     async create(req, res) {
         const { title, content, author, publicationDate, imageUrl, tags, externalLink } = req.body;
+
         if (!title || !content || !author) {
             return res.status(422).json({ error: 'Título, conteúdo e autor são obrigatórios' });
         }
+
         try {
             const newsItem = await this.newsService.createNews({ title, content, author, publicationDate, imageUrl, tags, externalLink });
             res.status(201).json({ message: 'Notícia criada com sucesso', newsItem });
